@@ -1,85 +1,77 @@
-import React from 'react'
+import { useState } from 'react'
 
-class Search extends React.Component {
-  state = {
-    search: '',
-    type: 'all',
-  }
+const Search = ({ searchMovies }) => {
+  const [search, setSearch] = useState('')
+  const [type, setType] = useState('all')
 
-  handleKey = e => {
+  const handleKey = e => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      this.props.searchMovies(this.state.search, this.state.type)
+      searchMovies(search, type)
     }
   }
-  handleFilter = e => {
-    this.setState(
-      () => ({ type: e.target.dataset.type }),
-      () => {
-        this.props.searchMovies(this.state.search, this.state.type)
-      }
-    )
+  const handleFilter = e => {
+    setType(e.target.dataset.type)
+    searchMovies(search, e.target.dataset.type)
   }
 
-  render() {
-    return (
-      <form className="col s12 ">
-        <div className="input-field">
+  return (
+    <form className="col s12 ">
+      <div className="input-field">
+        <input
+          placeholder="Search"
+          type="text"
+          className="validate"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          onKeyDown={handleKey}
+        />
+        <button
+          className="waves-effect waves-light btn search-btn light-blue darken-4"
+          onClick={e => {
+            e.preventDefault()
+            searchMovies(search, type)
+          }}>
+          Search
+        </button>
+      </div>
+      <div className="filter">
+        <label>
           <input
-            placeholder="Search"
-            type="text"
-            className="validate"
-            value={this.state.search}
-            onChange={e => this.setState({ search: e.target.value })}
-            onKeyDown={this.handleKey}
+            className="with-gap light-blue darken-3"
+            name="type"
+            type="radio"
+            data-type="all"
+            onChange={handleFilter}
+            checked={type === 'all'}
           />
-          <button
-            className="waves-effect waves-light btn search-btn light-blue darken-4"
-            onClick={e => {
-              e.preventDefault()
-              this.props.searchMovies(this.state.search, this.state.type)
-            }}>
-            Search
-          </button>
-        </div>
-        <div className="filter">
-          <label>
-            <input
-              className="with-gap light-blue darken-3"
-              name="type"
-              type="radio"
-              data-type="all"
-              onChange={this.handleFilter}
-              checked={this.state.type === 'all'}
-            />
-            <span>All</span>
-          </label>
-          <label>
-            <input
-              className="with-gap"
-              name="type"
-              type="radio"
-              data-type="movie"
-              onChange={this.handleFilter}
-              checked={this.state.type === 'movie'}
-            />
-            <span>Movies</span>
-          </label>
-          <label>
-            <input
-              className="with-gap"
-              name="type"
-              type="radio"
-              data-type="series"
-              onChange={this.handleFilter}
-              checked={this.state.type === 'series'}
-            />
-            <span>Series</span>
-          </label>
-        </div>
-      </form>
-    )
-  }
+          <span>All</span>
+        </label>
+        <label>
+          <input
+            className="with-gap"
+            name="type"
+            type="radio"
+            data-type="movie"
+            onChange={handleFilter}
+            checked={type === 'movie'}
+          />
+          <span>Movies</span>
+        </label>
+        <label>
+          <input
+            className="with-gap"
+            name="type"
+            type="radio"
+            data-type="series"
+            onChange={handleFilter}
+            checked={type === 'series'}
+          />
+          <span>Series</span>
+        </label>
+      </div>
+    </form>
+  )
 }
 
 export { Search }
